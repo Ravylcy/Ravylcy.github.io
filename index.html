@@ -185,15 +185,6 @@
       border-color: var(--primary-color);
     }
 
-    .minecraft-card {
-      border-color: var(--minecraft-color);
-    }
-
-    .minecraft-card:hover {
-      background: rgba(90, 191, 65, 0.3);
-      border-color: var(--minecraft-color);
-    }
-
     .contact-section {
       text-align: center;
       margin-top: 3rem;
@@ -249,6 +240,15 @@
       background-color: #4aa836;
     }
 
+    .btn-kofi {
+      background-color: #29abe0;
+      border-color: #29abe0;
+    }
+
+    .btn-kofi:hover {
+      background-color: #1e8fc7;
+    }
+
     .copied-notification {
       position: fixed;
       bottom: 20px;
@@ -296,66 +296,6 @@
       transform: translateY(-3px);
     }
 
-    /* Music Player Styles */
-    .music-player {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 50px;
-      padding: 10px 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 100;
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .music-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .music-btn {
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .music-btn:hover {
-      color: var(--hover-color);
-      transform: scale(1.1);
-    }
-
-    .volume-control {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .volume-slider {
-      width: 80px;
-      -webkit-appearance: none;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 2px;
-      outline: none;
-    }
-
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      background: var(--primary-color);
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .container {
@@ -377,13 +317,6 @@
       .contact-buttons {
         flex-direction: column;
         align-items: center;
-      }
-
-      .music-player {
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        justify-content: center;
       }
     }
 
@@ -407,19 +340,6 @@
     </video>
   </div>
 
-  <!-- Music Player -->
-  <div class="music-player">
-    <div class="music-controls">
-      <button class="music-btn" id="playPauseBtn">
-        <i class="fas fa-play"></i>
-      </button>
-      <div class="volume-control">
-        <i class="fas fa-volume-up"></i>
-        <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" id="volumeSlider">
-      </div>
-    </div>
-  </div>
-
   <div class="container">
     <header>
       <a href="#" class="logo">Syltharis</a>
@@ -438,20 +358,14 @@
           <a href="https://www.python.org/" target="_blank" class="skill-card">
             <i class="fab fa-python"></i> Python
           </a>
-          <a href="https://www.java.com/" target="_blank" class="skill-card minecraft-card">
-            <i class="fab fa-java"></i> Java (Minecraft)
-          </a>
-          <a href="https://nodejs.org/" target="_blank" class="skill-card">
-            <i class="fab fa-node-js"></i> Node.js
+          <a href="https://www.java.com/" target="_blank" class="skill-card">
+            <i class="fab fa-java"></i> Java
           </a>
           <a href="https://isocpp.org/" target="_blank" class="skill-card">
             <i class="fas fa-code"></i> C++
           </a>
           <a href="https://learn.microsoft.com/en-us/dotnet/csharp/" target="_blank" class="skill-card">
             <i class="fas fa-code"></i> C#
-          </a>
-          <a href="https://www.w3schools.com/sql/" target="_blank" class="skill-card">
-            <i class="fas fa-database"></i> SQL
           </a>
         </div>
       </div>
@@ -472,6 +386,9 @@
           <a href="https://github.com/Ravylcy/" target="_blank" class="btn btn-outline">
             <i class="fab fa-github"></i> GitHub
           </a>
+          <a href="https://ko-fi.com/syltharis" target="_blank" class="btn btn-kofi">
+            <i class="fas fa-coffee"></i> Buy Me a Coffee
+          </a>
         </div>
       </div>
     </main>
@@ -480,6 +397,7 @@
       <div class="social-links">
         <a href="javascript:void(0)" onclick="copyDiscord()"><i class="fab fa-discord"></i></a>
         <a href="https://github.com/Ravylcy/" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://ko-fi.com/syltharis" target="_blank"><i class="fas fa-coffee"></i></a>
       </div>
       <p>&copy; <span id="year"></span> Syltharis's Portfolio. All rights reserved.</p>
     </footer>
@@ -491,7 +409,7 @@
   </div>
 
   <!-- Audio Element (hidden) -->
-  <audio id="bgMusic" loop>
+  <audio id="bgMusic" loop autoplay>
     <source src="music/background.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
@@ -500,54 +418,32 @@
     // Set current year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Music Player Functionality
+    // Background Music
     const bgMusic = document.getElementById('bgMusic');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
-    let isPlaying = false;
+    
+    // Set volume (0.0 to 1.0) - adjust this value to change the volume
+    bgMusic.volume = 0.2; // 20% volume - change this number as needed
 
-    // Try to autoplay (may be blocked by browser)
-    function attemptAutoplay() {
+    // Try to autoplay the music (may be blocked by browser)
+    document.addEventListener('DOMContentLoaded', () => {
       const playPromise = bgMusic.play();
       
       if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          isPlaying = true;
-          updatePlayPauseIcon();
-        })
-        .catch(error => {
-          isPlaying = false;
-          updatePlayPauseIcon();
+        playPromise.catch(error => {
+          console.log('Autoplay was prevented:', error);
+          // Music will start when user interacts with page
         });
       }
-    }
+    });
 
-    // Update play/pause icon
-    function updatePlayPauseIcon() {
-      playPauseBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-    }
-
-    // Play/Pause button click handler
-    playPauseBtn.addEventListener('click', () => {
-      if (isPlaying) {
-        bgMusic.pause();
-      } else {
-        bgMusic.play();
+    // Start music on any user interaction if it was blocked
+    document.addEventListener('click', () => {
+      if (bgMusic.paused) {
+        bgMusic.play().catch(error => {
+          console.log('Playback still prevented:', error);
+        });
       }
-      isPlaying = !isPlaying;
-      updatePlayPauseIcon();
-    });
-
-    // Volume slider handler
-    volumeSlider.addEventListener('input', () => {
-      bgMusic.volume = volumeSlider.value;
-    });
-
-    // Initialize volume
-    bgMusic.volume = volumeSlider.value;
-
-    // Attempt autoplay when page loads
-    window.addEventListener('load', attemptAutoplay);
+    }, { once: true });
 
     // Copy Discord function
     function copyDiscord() {
