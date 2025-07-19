@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syltharis's Portfolio</title>
+  <link rel="icon" type="image/png" href="images/TabIcon.jpg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6c5ce7;
+      --secondary-color: #ffffff;
+      --background-color: rgba(0, 0, 0, 0.3);
+      --text-color: #ffffff;
+      --hover-color: #00cec9;
+      --card-bg: rgba(0, 0, 0, 0.5);
+      --text-light: #dfe6e9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+      margin: 0;
+      overflow-x: hidden;
+      line-height: 1.6;
+      background: #0a0a0a;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(45deg, var(--primary-color), var(--hover-color));
+      border-radius: 6px;
+      border: 2px solid rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(45deg, var(--hover-color), var(--primary-color));
+      box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
+    }
+
+    /* Firefox scrollbar */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) rgba(0, 0, 0, 0.3);
+    }
+
+    /* Loading Screen Styles */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #000000 0%, #0a0a0a 30%, #111111 70%, #0a0a0a 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 1s ease-out, visibility 1s ease-out;
+    }
+
+    .loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loading-logo {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 2rem;
+      text-shadow: 0 4px 8px rgba(108, 92, 231, 0.3);
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .loading-text {
+      font-size: 1.2rem;
+      color: var(--text-light);
+      margin-bottom: 3rem;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    .loading-bar-container {
+      width: 300px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+      backdrop-filter: blur(5px);
+    }
+
+    .loading-bar {
+      height: 100%;
+      background: #6c5ce7;
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+      position: relative;
+      box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
+    }
+
+    .loading-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .loading-percentage {
+      color: var(--text-color);
+      font-size: 1rem;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    .loading-dots {
+      display: inline-block;
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin-top: 2rem;
+    }
+
+    .loading-dots div {
+      position: absolute;
+      top: 33px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+
+    .loading-dots div:nth-child(1) {
+      left: 8px;
+      animation: dots1 0.6s infinite;
+    }
+
+    .loading-dots div:nth-child(2) {
+      left: 8px;
+      animation: dots2 0.6s infinite;
+    }
+
+    .loading-dots div:nth-child(3) {
+      left: 32px;
+      animation: dots2 0.6s infinite;
+    }
+
+    .loading-dots div:nth-child(4) {
+      left: 56px;
+      animation: dots3 0.6s infinite;
+    }
+
+    @keyframes dots1 {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes dots3 {
+      0% { transform: scale(1); }
+      100% { transform: scale(0); }
+    }
+
+    @keyframes dots2 {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(24px, 0); }
+    }
+
+    /* Main Portfolio Styles */
+    .main-portfolio {
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    .main-portfolio.loaded {
+      opacity: 1;
+    }
+
+    .bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      filter: brightness(0.8);
+    }
+
+    .bg-video video {
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .logo:hover {
+      color: var(--hover-color);
+    }
+
+    .main-content {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
+      margin: 2rem 0;
+      animation: fadeIn 1s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: var(--text-color);
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: var(--text-color);
+      position: relative;
+      display: inline-block;
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--primary-color);
+      border-radius: 2px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+
+    .highlight {
+      color: var(--hover-color);
+      font-weight: 500;
+    }
+
+    .skills-section {
+      margin: 3rem 0;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .skill-card {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-color);
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+    }
+
+    .skill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background: rgba(108, 92, 231, 0.3);
+      border-color: var(--primary-color);
+    }
+
+    .contact-section {
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    .contact-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      background-color: var(--primary-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      box-shadow: 0 4px 6px rgba(108, 92, 231, 0.3);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(108, 92, 231, 0.4);
+      background-color: var(--hover-color);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn-kofi {
+      background-color: #29abe0;
+      border-color: #29abe0;
+    }
+
+    .btn-kofi:hover {
+      background-color: #1e8fc7;
+    }
+
+    .btn-curseforge {
+      background-color: #f16436;
+      border-color: #f16436;
+    }
+
+    .btn-curseforge:hover {
+      background-color: #d9502d;
+    }
+
+    .btn-discord-server {
+      background-color: #7289da;
+      border-color: #7289da;
+    }
+
+    .btn-discord-server:hover {
+      background-color: #5b6eae;
+    }
+
+    .copied-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: rgba(76, 175, 80, 0.9);
+      color: #ffffff;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      z-index: 100;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .copied-notification.show {
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-color);
+      margin-top: auto;
+      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 16px 16px 0 0;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: var(--text-color);
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--hover-color);
+      transform: translateY(-3px);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .main-content {
+        padding: 2rem 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
+      
+      h2 {
+        font-size: 1.6rem;
+      }
+      
+      .contact-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .loading-logo {
+        font-size: 3rem;
+      }
+
+      .loading-bar-container {
+        width: 250px;
+      }
+    }
+
+    /* Animation for floating elements */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .floating {
+      animation: float 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-logo">Syltharis</div>
+    <div class="loading-text">Loading your experience...</div>
+    <div class="loading-bar-container">
+      <div id="loadingBar" class="loading-bar"></div>
+    </div>
+    <div id="loadingPercentage" class="loading-percentage">0%</div>
+    <div class="loading-dots">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- Main Portfolio Content -->
+  <div id="mainPortfolio" class="main-portfolio">
+    <!-- Background Video -->
+    <div class="bg-video">
+      <video id="bgVideo" autoplay muted loop>
+        <source src="images/background.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
+    </div>
+
+    <div class="container">
+      <header>
+        <a href="#" class="logo">Syltharis</a>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content floating">
+        <h1>Hello! I'm Syltharis</h1>
+        <p class="intro">As a passionate developer, my journey began with learning Python and creating <span class="highlight">game mods</span>. My curiosity and love for learning soon led me to explore and master a wide array of skills in software development, web technologies, and utility tools that benefit both creators and users alike.</p>
+
+        <div class="skills-section">
+          <h2>Technical Skills</h2>
+          <p>I've developed expertise in multiple programming languages and frameworks, specializing in both web development and <span class="highlight">game enhancement projects</span>.</p>
+          
+          <div class="skills-list">
+            <a href="https://www.python.org/" target="_blank" class="skill-card">
+              <i class="fab fa-python"></i> Python
+            </a>
+            <a href="https://www.java.com/" target="_blank" class="skill-card">
+              <i class="fab fa-java"></i> Java
+            </a>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" class="skill-card">
+              <i class="fab fa-js-square"></i> JavaScript
+            </a>
+          </div>
+        </div>
+
+        <h2>Projects & Experience</h2>
+        <p>I create small projects and <span class="highlight">game modifications</span>, combining my programming skills with creativity to build unique experiences. My work ranges from web applications to practical tools that enhance both developer and user experiences.</p>
+        
+        <p>I develop solutions that make a difference - from productivity utilities that streamline workflows to game enhancements that transform gameplay. My focus is on creating tools that solve real problems while being accessible and enjoyable to use.</p>
+        
+        <p>I stand proud of my accomplishments in these areas and the progress I've made. The key lesson I've learned is the importance of staying steadfast in pursuing your goals, no matter the obstacles. With focus and determination, you possess the power to overcome any challenge.</p>
+
+        <div class="contact-section">
+          <h2>Get In Touch</h2>
+          <p>Feel free to reach out for commissions, collaborations, or just to say hello!</p>
+          
+          <div class="contact-buttons">
+            <a href="javascript:void(0)" onclick="copyDiscord()" class="btn">
+              <i class="fab fa-discord"></i> Discord
+            </a>
+            <a href="https://discord.com/invite/XRCe4GK6" target="_blank" class="btn btn-discord-server">
+              <i class="fab fa-discord"></i> Discord Server
+            </a>
+            <a href="https://github.com/Ravylcy/" target="_blank" class="btn btn-outline">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="https://www.curseforge.com/members/fushi/projects" target="_blank" class="btn btn-curseforge">
+              <i class="fas fa-fire"></i> CurseForge
+            </a>
+            <a href="https://ko-fi.com/syltharis" target="_blank" class="btn btn-kofi">
+              <i class="fas fa-coffee"></i> Buy Me a Coffee
+            </a>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <div class="social-links">
+          <a href="javascript:void(0)" onclick="copyDiscord()"><i class="fab fa-discord"></i></a>
+          <a href="https://discord.com/invite/ujz2n4fdFM" target="_blank"><i class="fab fa-discord"></i></a>
+          <a href="https://github.com/Ravylcy/" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://www.curseforge.com/members/fushi/projects" target="_blank"><i class="fas fa-fire"></i></a>
+          <a href="https://ko-fi.com/syltharis" target="_blank"><i class="fas fa-coffee"></i></a>
+        </div>
+        <p>&copy; <span id="year"></span> Syltharis's Portfolio. All rights reserved.</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Copied Notification -->
+  <div id="copiedNotification" class="copied-notification">
+    Copied Discord Username: sokamorow
+  </div>
+
+  <!-- Audio Element (hidden) -->
+  <audio id="bgMusic" loop autoplay>
+    <source src="music/background.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    // Loading Screen Logic
+    let loadingProgress = 0;
+    let assetsToLoad = 1; // Background video
+    let assetsLoaded = 0;
+
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingPercentage = document.getElementById('loadingPercentage');
+    const loadingScreen = document.getElementById('loadingScreen');
+    const mainPortfolio = document.getElementById('mainPortfolio');
+    const bgVideo = document.getElementById('bgVideo');
+
+    function updateLoadingProgress(progress) {
+      loadingProgress = progress;
+      loadingBar.style.width = progress + '%';
+      loadingPercentage.textContent = Math.round(progress) + '%';
+    }
+
+    function assetLoaded() {
+      assetsLoaded++;
+      const progress = (assetsLoaded / assetsToLoad) * 100;
+      updateLoadingProgress(progress);
+      
+      if (assetsLoaded === assetsToLoad) {
+        // Add a small delay to show 100% completion
+        setTimeout(hideLoadingScreen, 500);
+      }
+    }
+
+    function hideLoadingScreen() {
+      loadingScreen.classList.add('hidden');
+      mainPortfolio.classList.add('loaded');
+      
+      // Start background music after loading
+      setTimeout(() => {
+        const bgMusic = document.getElementById('bgMusic');
+        bgMusic.volume = 0.2;
+        
+        const playPromise = bgMusic.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('Autoplay was prevented:', error);
+          });
+        }
+      }, 1000);
+    }
+
+    // Preload background video
+    function preloadVideo() {
+      const video = document.createElement('video');
+      video.preload = 'auto';
+      video.muted = true;
+      
+      video.addEventListener('canplaythrough', () => {
+        // Video is ready to play
+        assetLoaded();
+      });
+      
+      video.addEventListener('error', () => {
+        console.log('Video failed to load, continuing anyway');
+        assetLoaded();
+      });
+      
+      video.src = 'images/background.mp4';
+    }
+
+    // Start loading assets
+    document.addEventListener('DOMContentLoaded', () => {
+      // Simulate initial loading steps
+      setTimeout(() => updateLoadingProgress(20), 100);
+      setTimeout(() => updateLoadingProgress(40), 300);
+      
+      // Start preloading video
+      preloadVideo();
+    });
+
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Start music on any user interaction if it was blocked
+    document.addEventListener('click', () => {
+      const bgMusic = document.getElementById('bgMusic');
+      if (bgMusic.paused) {
+        bgMusic.play().catch(error => {
+          console.log('Playback still prevented:', error);
+        });
+      }
+    }, { once: true });
+
+    // Copy Discord function
+    function copyDiscord() {
+      const discordUsername = "yongxiao_.";
+      navigator.clipboard.writeText(discordUsername).then(() => {
+        const notification = document.getElementById("copiedNotification");
+        notification.textContent = `Copied Discord: ${discordUsername}`;
+        notification.classList.add("show");
+        setTimeout(() => {
+          notification.classList.remove("show");
+        }, 3000);
+      }).catch(err => {
+        console.error("Failed to copy Discord username: ", err);
+        alert("Failed to copy Discord username. Please copy manually: yongxiao_.");
+      });
+    }
+
+    // Add smooth scroll to all links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
