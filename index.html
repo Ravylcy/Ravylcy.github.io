@@ -33,7 +33,6 @@
       background: #0a0a0a;
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 12px;
     }
@@ -55,13 +54,11 @@
       box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
     }
 
-    /* Firefox scrollbar */
     * {
       scrollbar-width: thin;
       scrollbar-color: var(--primary-color) rgba(0, 0, 0, 0.3);
     }
 
-    /* Loading Screen Styles */
     .loading-screen {
       position: fixed;
       top: 0;
@@ -200,7 +197,6 @@
       100% { transform: translate(24px, 0); }
     }
 
-    /* Main Portfolio Styles */
     .main-portfolio {
       opacity: 0;
       transition: opacity 1s ease-in;
@@ -477,7 +473,6 @@
       transform: translateY(-3px);
     }
 
-    /* Responsive adjustments */
     @media (max-width: 768px) {
       .container {
         padding: 1rem;
@@ -509,7 +504,6 @@
       }
     }
 
-    /* Animation for floating elements */
     @keyframes float {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
@@ -521,7 +515,6 @@
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div id="loadingScreen" class="loading-screen">
     <div class="loading-logo">Syltharis</div>
     <div class="loading-text">Loading your experience...</div>
@@ -537,9 +530,7 @@
     </div>
   </div>
 
-  <!-- Main Portfolio Content -->
   <div id="mainPortfolio" class="main-portfolio">
-    <!-- Background Video -->
     <div class="bg-video">
       <video id="bgVideo" autoplay muted loop>
         <source src="images/background.mp4" type="video/mp4">
@@ -552,7 +543,6 @@
         <a href="#" class="logo">Syltharis</a>
       </header>
 
-      <!-- Main Content -->
       <main class="main-content floating">
         <h1>Hello! I'm Syltharis</h1>
         <p class="intro">As a passionate developer, my journey began with learning Python and creating <span class="highlight">game mods</span>. My curiosity and love for learning soon led me to explore and master a wide array of skills in software development, web technologies, and utility tools that benefit both creators and users alike.</p>
@@ -567,9 +557,6 @@
             </a>
             <a href="https://www.java.com/" target="_blank" class="skill-card">
               <i class="fab fa-java"></i> Java
-            </a>
-            <a href="https://isocpp.org/" target="_blank" class="skill-card">
-              <i class="fas fa-code"></i> C++
             </a>
             <a href="https://learn.microsoft.com/en-us/dotnet/csharp/" target="_blank" class="skill-card">
               <i class="fas fa-code"></i> C#
@@ -586,7 +573,7 @@
         <h2>Projects & Experience</h2>
         <p>I create small projects and <span class="highlight">game modifications</span>, combining my programming skills with creativity to build unique experiences. My work ranges from web applications to practical tools that enhance both developer and user experiences.</p>
         
-        <p>I develop solutions that make a difference - from productivity utilities that streamline workflows to game enhancements that transform gameplay. My focus is on creating tools that solve real problems while being accessible and enjoyable to use.</p>
+        <p>I develop solutions that make a difference, from productivity utilities that streamline workflows to game enhancements that transform gameplay. My focus is on creating tools that solve real problems while being accessible and enjoyable to use.</p>
         
         <p>I stand proud of my accomplishments in these areas and the progress I've made. The key lesson I've learned is the importance of staying steadfast in pursuing your goals, no matter the obstacles. With focus and determination, you possess the power to overcome any challenge.</p>
 
@@ -627,21 +614,18 @@
     </div>
   </div>
 
-  <!-- Copied Notification -->
   <div id="copiedNotification" class="copied-notification">
     Copied Discord Username: sokamorow
   </div>
 
-  <!-- Audio Element (hidden) -->
   <audio id="bgMusic" loop autoplay>
     <source src="music/background.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
   <script>
-    // Loading Screen Logic
     let loadingProgress = 0;
-    let assetsToLoad = 1; // Background video
+    let assetsToLoad = 1;
     let assetsLoaded = 0;
 
     const loadingBar = document.getElementById('loadingBar');
@@ -662,7 +646,6 @@
       updateLoadingProgress(progress);
       
       if (assetsLoaded === assetsToLoad) {
-        // Add a small delay to show 100% completion
         setTimeout(hideLoadingScreen, 500);
       }
     }
@@ -671,7 +654,6 @@
       loadingScreen.classList.add('hidden');
       mainPortfolio.classList.add('loaded');
       
-      // Start background music after loading
       setTimeout(() => {
         const bgMusic = document.getElementById('bgMusic');
         bgMusic.volume = 0.2;
@@ -685,14 +667,12 @@
       }, 1000);
     }
 
-    // Preload background video
     function preloadVideo() {
       const video = document.createElement('video');
       video.preload = 'auto';
       video.muted = true;
       
       video.addEventListener('canplaythrough', () => {
-        // Video is ready to play
         assetLoaded();
       });
       
@@ -704,20 +684,15 @@
       video.src = 'images/background.mp4';
     }
 
-    // Start loading assets
     document.addEventListener('DOMContentLoaded', () => {
-      // Simulate initial loading steps
       setTimeout(() => updateLoadingProgress(20), 100);
       setTimeout(() => updateLoadingProgress(40), 300);
       
-      // Start preloading video
       preloadVideo();
     });
 
-    // Set current year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Start music on any user interaction if it was blocked
     document.addEventListener('click', () => {
       const bgMusic = document.getElementById('bgMusic');
       if (bgMusic.paused) {
@@ -727,7 +702,6 @@
       }
     }, { once: true });
 
-    // Copy Discord function
     function copyDiscord() {
       const discordUsername = "yongxiao_.";
       navigator.clipboard.writeText(discordUsername).then(() => {
@@ -743,7 +717,6 @@
       });
     }
 
-    // Add smooth scroll to all links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -758,3 +731,4 @@
   </script>
 </body>
 </html>
+
