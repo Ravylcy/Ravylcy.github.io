@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AFO Mapping Generator</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff4757; 
+      --secondary-color: #ffffff;
+      --background-color: #0a0a0a;
+      --text-color: #ffffff;
+      --hover-color: #ff6b81;
+      --card-bg: rgba(0, 0, 0, 0.6);
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --text-light: #dfe6e9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: var(--primary-color) rgba(0,0,0,0.3); }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+    ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 6px; border: 2px solid rgba(0,0,0,0.3); }
+    body { font-family: 'Poppins', sans-serif; color: var(--text-color); background: var(--background-color); overflow-x: hidden; line-height: 1.6; }
+
+    .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s; }
+    .loading-screen.hidden { opacity: 0; visibility: hidden; }
+    .loading-bar-container { width: 300px; height: 4px; background: #333; margin-top: 20px; border-radius: 2px; }
+    .loading-bar { width: 0%; height: 100%; background: var(--primary-color); transition: width 0.5s; }
+
+    .bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; object-fit: cover; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .main-content { background: var(--card-bg); border-radius: 16px; padding: 3rem; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); animation: fadeIn 1s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    h1 { font-size: 2.5rem; text-shadow: 0 2px 10px rgba(255, 71, 87, 0.5); }
+    h2 { font-size: 1.5rem; color: var(--primary-color); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: inline-block; padding-bottom: 5px; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    label { font-size: 0.85rem; color: var(--text-light); }
+    input, select { background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem; border-radius: 8px; font-family: inherit; width: 100%; }
+    input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 15px rgba(255, 71, 87, 0.2); }
+
+    .controls { margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn { background: var(--primary-color); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); }
+    .btn-download { background: #00cec9; }
+
+    .item-list { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+    .item-card { background: rgba(255,255,255,0.05); padding: 1rem 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 1rem; min-width: 250px; }
+    .tech-icon { font-size: 1.2rem; color: var(--primary-color); background: rgba(255,255,255,0.1); padding: 10px; border-radius: 50%; }
+  </style>
+</head>
+<body>
+
+  <div id="loadingScreen" class="loading-screen">
+    <h1 style="color:white;">All For One</h1>
+    <div class="loading-bar-container"><div id="loadingBar" class="loading-bar"></div></div>
+  </div>
+
+  <video class="bg-video" autoplay muted loop><source src="images/background.mp4" type="video/mp4"></video>
+
+  <div class="container">
+    <main class="main-content">
+      <h1>AFO Mapping Generator</h1>
+      <p style="color:#aaa; margin-bottom:2rem;">Map techniques, skills, and mob associations for the All For One system.</p>
+
+      <form id="afoForm">
+        <h2>Technique Details</h2>
+        <div class="form-grid">
+          <div class="input-group">
+            <label>Technique ID (Integer)</label>
+            <input type="number" id="id" placeholder="e.g. 1001" required>
+          </div>
+          <div class="input-group">
+            <label>Display Name</label>
+            <input type="text" id="name" placeholder="e.g. Blood Manipulation">
+          </div>
+          <div class="input-group">
+            <label>Icon Item ID</label>
+            <input type="text" id="icon" placeholder="minecraft:redstone">
+          </div>
+          <div class="input-group">
+            <label>AI Profile (Optional)</label>
+            <input type="text" id="ai_profile" placeholder="e.g. choso">
+          </div>
+        </div>
+
+        <h2>Configuration</h2>
+        <div class="form-grid">
+          <div class="input-group">
+            <label>Skill IDs (Comma separated)</label>
+            <input type="text" id="skills" placeholder="1005, 1006, 1020">
+          </div>
+          <div class="input-group">
+            <label>Mob IDs (Comma separated)</label>
+            <input type="text" id="mobs" placeholder="jujutsucraft:choso, jujutsucraft:kamo">
+          </div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="btn" onclick="addTechnique()">
+            <i class="fas fa-hand-holding-magic"></i> Add Mapping
+          </button>
+        </div>
+      </form>
+
+      <div id="itemList" class="item-list">
+        <span style="color:rgba(255,255,255,0.3);">No mappings added yet.</span>
+      </div>
+
+      <div class="controls" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
+        <div class="input-group" style="max-width:300px;">
+          <label>File Name</label>
+          <input type="text" id="file_name" value="custom_afo_mappings">
+        </div>
+        <button type="button" class="btn btn-download" onclick="downloadPack()">Download Datapack</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let width = 0;
+      const interval = setInterval(() => {
+        width += 20; document.getElementById('loadingBar').style.width = width + '%';
+        if(width >= 100) { clearInterval(interval); setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 500); }
+      }, 150);
+    });
+
+    let techniques = [];
+
+    function val(id, type = 'string') {
+      const el = document.getElementById(id);
+      if(type === 'int') return parseInt(el.value) || 0;
+      if(type === 'list_int') return el.value ? el.value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)) : [];
+      if(type === 'list_str') return el.value ? el.value.split(',').map(s => s.trim()).filter(s => s) : [];
+      return el.value;
+    }
+
+    function addTechnique() {
+      const id = val('id', 'int');
+      if(!id) return alert("Technique ID is required");
+
+      const tech = {
+        id: id,
+        name: val('name'),
+        icon: val('icon'),
+        ai_profile: val('ai_profile') || null,
+        skills: val('skills', 'list_int'),
+        mob_associations: val('mobs', 'list_str')
+      };
+
+      if(tech.skills.length === 0) delete tech.skills;
+      if(tech.mob_associations.length === 0) delete tech.mob_associations;
+
+      techniques.push(tech);
+      
+      const list = document.getElementById('itemList');
+      if(techniques.length === 1) list.innerHTML = '';
+      list.innerHTML += `
+        <div class="item-card">
+          <i class="fas fa-skull tech-icon"></i>
+          <div><strong>${tech.name}</strong><br><span style="font-size:0.8em; opacity:0.7;">ID: ${tech.id}</span></div>
+        </div>
+      `;
+
+      document.getElementById('id').value = "";
+      document.getElementById('name').value = "";
+      document.getElementById('skills').value = "";
+      document.getElementById('mobs').value = "";
+    }
+
+    function downloadPack() {
+      if(techniques.length === 0) return alert("Add at least one technique");
+      
+      const zip = new JSZip();
+      zip.file("pack.mcmeta", JSON.stringify({ pack: { pack_format: 15, description: "Omega AFO Mappings" } }, null, 2));
+      
+      const finalJson = { techniques: techniques };
+      
+      const filename = document.getElementById('file_name').value || "afo_mappings";
+      const folder = zip.folder("data").folder("omega").folder("afo_mappings");
+      
+      folder.file(`${filename}.json`, JSON.stringify(finalJson, null, 2));
+
+      zip.generateAsync({type:"blob"}).then(c => saveAs(c, "omega_afo_datapack.zip"));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Omega Wiki - Datapacks</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+  <style>
+    :root {
+      --primary-color: #00cec9;
+      --bg-color: #0a0a0a;
+      --text-color: #ffffff;
+      --card-bg: rgba(0, 0, 0, 0.7);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --code-bg: #1e1e1e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; color: var(--text-color); background: var(--bg-color); line-height: 1.6; }
+    .bg-video {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+      background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
+    }
+    .bg-video video {
+      min-width: 100%; min-height: 100%; width: auto; height: auto;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      object-fit: cover; opacity: 0.3;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+    .wiki-header { margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
+    .breadcrumb { color: #aaa; margin-bottom: 0.5rem; }
+    .breadcrumb a { color: var(--primary-color); text-decoration: none; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .section { margin-bottom: 4rem; background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); }
+    h2 { color: var(--primary-color); margin-bottom: 1.5rem; font-size: 1.8rem; border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
+    h3 { color: #dfe6e9; margin: 1.5rem 0 1rem; }
+    p { color: #b2bec3; margin-bottom: 1rem; }
+    ul { list-style-position: inside; padding-left: 1rem; }
+    .code-block { background: var(--code-bg); border-radius: 8px; border: 1px solid #333; margin: 1rem 0; overflow: hidden; }
+    .code-header { background: #252526; padding: 0.5rem 1rem; font-size: 0.8rem; color: #888; display: flex; justify-content: space-between; align-items: center; }
+    .copy-btn { background: none; border: none; color: #aaa; cursor: pointer; }
+    .copy-btn:hover { color: white; }
+    pre { margin: 0; padding: 1rem; overflow-x: auto; }
+    .api-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .api-table th, .api-table td { text-align: left; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .api-table th { color: var(--primary-color); background: rgba(0,0,0,0.3); }
+    .api-table code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; color: #fab1a0; font-family: 'Consolas', monospace; }
+  </style>
+</head>
+<body>
+  <div class="bg-video">
+    <video autoplay muted loop><source src="images/background.mp4" type="video/mp4"></video>
+  </div>
+  <div class="container">
+    <div class="wiki-header">
+      <div class="breadcrumb"><a href="index.html"><i class="fas fa-arrow-left"></i> Back to Hub</a> / Wiki</div>
+      <h1>Datapack Documentation</h1>
+      <p>Create content for Omega without writing code using JSON Datapacks.</p>
+    </div>
+    <div class="section">
+      <h2>File Structure</h2>
+      <p>To add custom content, create a Datapack with the following directory structure inside your <code>data/</code> folder.</p>
+      <div class="code-block">
+        <div class="code-header">Datapack Directory Tree</div>
+        <pre><code class="language-bash">data/
+  omega/
+    omega_clans/              # Custom Clans
+      your_clan.json
+    omega_clan_specializations/
+      your_spec.json
+    omega_souls/              # Custom Soul Shards
+      your_soul.json
+    afo_mappings/             # All For One configurations
+      techniques.json</code></pre>
+      </div>
+    </div>
+    <div class="section">
+      <h2>JSON Specifications</h2>
+      <h3>Clan JSON</h3>
+      <p>Place in <code>data/omega/omega_clans/</code>. Ensure the file name matches the ID if possible.</p>
+      <div class="code-block">
+        <div class="code-header">example_clan.json <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-json">{
+  "id": "mugen",
+  "display_name": "Mugen Clan",
+  "color": "#00FFFF",
+  "has_god_ki": true,
+  "specializations": ["Sage", "Cataclysm"],
+  "default_traits": ["Angel"], 
+  "simple_domain_radius_mult": 1.25,
+  "rct_efficiency_mult": 1.5,
+  "technique_cost_mult": 0.8,
+  "bonus_health": 10.0,
+  "bonus_speed": 0.05
+}</code></pre>
+      </div>
+      <h3>Soul JSON</h3>
+      <p>Place in <code>data/omega/omega_souls/</code>.</p>
+      <div class="code-block">
+        <div class="code-header">example_soul.json <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-json">{
+  "id": "ancient_sorcerer",
+  "name": "Ancient Sorcerer",
+  "color": "#FF0000",
+  "blip_sound": "minecraft:entity.experience_orb.pickup",
+  "damage_multiplier": 1.2,
+  "dialogue": {
+    "COMBAT_START": ["Show me your strength.", "I have awoken."],
+    "PLAYER_LOW_HEALTH": ["Do not falter now."]
+  }
+}</code></pre>
+      </div>
+    </div>
+    <div class="section">
+      <h2>JSON Attribute Reference</h2>
+      <p>This table lists all available keys for use in Clan, Specialization, and Soul JSON files. Not all keys are applicable to every type.</p>
+      <table class="api-table">
+          <thead>
+              <tr>
+                  <th>Key</th>
+                  <th>Type</th>
+                  <th>Default</th>
+                  <th>Description</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr><td colspan="4" style="background:rgba(0,0,0,0.2); text-align:center; font-weight:bold;">Identity & Display</td></tr>
+              <tr><td><code>id</code></td><td>String</td><td>N/A</td><td>The unique technical ID (e.g., "zenin"). Required.</td></tr>
+              <tr><td><code>display_name</code></td><td>String</td><td>ID</td><td>The in-game display name (e.g., "Zenin Clan"). For Souls, this is `name`.</td></tr>
+              <tr><td><code>color</code></td><td>String</td><td>"#FFFFFF"</td><td>Hex color code for clan/soul name display.</td></tr>
+              <tr><td><code>has_god_ki</code></td><td>Boolean</td><td><code>false</code></td><td>If true, the entity cannot be sensed by Six Eyes unless the viewer also has God Ki.</td></tr>
+              <tr><td colspan="4" style="background:rgba(0,0,0,0.2); text-align:center; font-weight:bold;">Clan Features</td></tr>
+              <tr><td><code>specializations</code></td><td>List (String)</td><td>[]</td><td>(Clan only) A list of Specialization IDs available to this clan.</td></tr>
+              <tr><td><code>default_traits</code></td><td>List (String)</td><td>[]</td><td>(Clan only) A list of Trait IDs granted when this clan is acquired.</td></tr>
+              <tr><td><code>default_physical_traits</code></td><td>List (String)</td><td>[]</td><td>(Clan only) A list of Physical Trait IDs granted when this clan is acquired.</td></tr>
+              <tr><td colspan="4" style="background:rgba(0,0,0,0.2); text-align:center; font-weight:bold;">Soul Audio & Dialogue</td></tr>
+              <tr><td><code>blip_sound</code></td><td>String</td><td>"omega:maleblip"</td><td>(Soul only) Sound event ID for dialogue text.</td></tr>
+              <tr><td><code>blip_pitch</code></td><td>Number</td><td>1.0</td><td>(Soul only) Pitch for the blip sound.</td></tr>
+              <tr><td><code>blip_volume</code></td><td>Number</td><td>1.0</td><td>(Soul only) Volume for the blip sound.</td></tr>
+              <tr><td><code>secondary_blip_sound</code></td><td>String</td><td>null</td><td>(Soul only) Optional second sound for a "fused" voice effect.</td></tr>
+              <tr><td><code>dialogue</code></td><td>Object</td><td>null</td><td>(Soul only) An object mapping Dialogue Triggers to lists of strings.</td></tr>
+              <tr><td colspan="4" style="background:rgba(0,0,0,0.2); text-align:center; font-weight:bold;">Jujutsu Modifiers</td></tr>
+              <tr><td><code>damage_multiplier</code></td><td>Number</td><td>1.0</td><td>Multiplier for unarmed and technique damage.</td></tr>
+              <tr><td><code>weapon_damage_multiplier</code></td><td>Number</td><td>1.0</td><td>Multiplier for weapon damage. Stacks with <code>damage_multiplier</code>.</td></tr>
+              <tr><td><code>technique_cost_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for Cursed Energy costs. Lower is better.</td></tr>
+              <tr><td><code>domain_expansion_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for Domain Expansion power/refinement.</td></tr>
+              <tr><td><code>simple_domain_radius_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for Simple Domain's radius.</td></tr>
+              <tr><td><code>simple_domain_level_bonus</code></td><td>Number</td><td>0.0</td><td>Flat bonus added to Simple Domain's output level.</td></tr>
+              <tr><td><code>da_drain_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for Domain Amplification's CE drain. Lower is better.</td></tr>
+              <tr><td><code>da_level_bonus</code></td><td>Number</td><td>0.0</td><td>Flat bonus added to Domain Amplification's output level.</td></tr>
+              <tr><td><code>rct_efficiency_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for Reverse Cursed Technique healing amount. Higher is better.</td></tr>
+              <tr><td><code>rct_fatigue_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for fatigue gained from using RCT. Lower is better.</td></tr>
+              <tr><td><code>guard_damage_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for damage taken while guarding. Lower is better.</td></tr>
+              <tr><td><code>guard_duration_mult</code></td><td>Number</td><td>1.0</td><td>Multiplier for how long a guard can be held.</td></tr>
+              <tr><td><code>black_flash_chance_bonus</code></td><td>Number</td><td>0.0</td><td>Additive bonus to Black Flash chance (0.05 = +5%).</td></tr>
+              <tr><td colspan="4" style="background:rgba(0,0,0,0.2); text-align:center; font-weight:bold;">Stat Bonuses</td></tr>
+              <tr><td><code>bonus_health</code></td><td>Number</td><td>0</td><td>(Clans/Specs) Flat bonus to max health (2 = 1 heart).</td></tr>
+              <tr><td><code>health_bonus</code></td><td>Number</td><td>0</td><td>(Souls) Flat bonus to max health (2 = 1 heart).</td></tr>
+              <tr><td><code>bonus_armor</code></td><td>Number</td><td>0</td><td>(Clans/Specs) Flat bonus to armor points.</td></tr>
+              <tr><td><code>armor_bonus</code></td><td>Number</td><td>0</td><td>(Souls) Flat bonus to armor points.</td></tr>
+              <tr><td><code>bonus_attack_damage</code></td><td>Number</td><td>0</td><td>(Clans/Specs) Flat bonus to base attack damage.</td></tr>
+              <tr><td><code>attack_bonus</code></td><td>Number</td><td>0</td><td>(Souls) Flat bonus to base attack damage.</td></tr>
+              <tr><td><code>bonus_speed</code></td><td>Number</td><td>0.0</td><td>(Clans/Specs) Additive bonus to movement speed (0.1 = +10%).</td></tr>
+              <tr><td><code>speed_bonus</code></td><td>Number</td><td>0.0</td><td>(Souls) Additive bonus to movement speed (0.1 = +10%).</td></tr>
+              <tr><td><code>bonus_knockback_resistance</code></td><td>Number</td><td>0.0</td><td>(Clans/Specs) Additive bonus to knockback resistance.</td></tr>
+          </tbody>
+      </table>
+    </div>
+    <div class="section">
+      <h2>Built-in IDs</h2>
+      <p>You can use these default IDs in your datapacks, for example, in a clan's <code>"specializations"</code> or <code>"default_traits"</code> lists.</p>
+      
+      <h3>Traits</h3>
+      <ul>
+          <li><code>Angel</code></li>
+          <li><code>Fallen</code></li>
+          <li><code>Deity</code></li>
+      </ul>
+  
+      <h3>Physical Traits</h3>
+      <ul>
+          <li><code>Vessel</code></li>
+      </ul>
+  
+      <h3>Specializations</h3>
+      <ul>
+          <li><code>Sage</code></li>
+          <li><code>Cataclysm</code></li>
+          <li><code>Destroyer</code></li>
+          <li><code>Guardian</code></li>
+          <li><code>Ascendant</code></li>
+          <li><code>Titan</code></li>
+      </ul>
+    </div>
+    <div class="section">
+      <h2>Reference Enums</h2>
+      <h3>Dialogue Triggers</h3>
+      <p>Use these keys within the <code>dialogue</code> object in Soul JSONs to trigger chat messages.</p>
+      <table class="api-table">
+        <thead><tr><th>Trigger Key</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>COMBAT_START</code></td><td>Fires when the player enters combat (takes damage or deals damage after being idle).</td></tr>
+          <tr><td><code>PLAYER_LOW_HEALTH</code></td><td>Fires when player HP drops below 30%.</td></tr>
+          <tr><td><code>TARGET_LOW_HEALTH</code></td><td>Fires when the opponent's HP drops below 20%.</td></tr>
+          <tr><td><code>PLAYER_KILL_MOB</code></td><td>Fires on killing a standard mob.</td></tr>
+          <tr><td><code>PLAYER_KILL_BOSS</code></td><td>Fires on killing a boss (Wither/Ender Dragon).</td></tr>
+          <tr><td><code>PLAYER_DEATH</code></td><td>Fires when the player dies.</td></tr>
+          <tr><td><code>ENTER_NETHER</code></td><td>Fires when entering the Nether dimension.</td></tr>
+          <tr><td><code>ENTER_END</code></td><td>Fires when entering the End dimension.</td></tr>
+          <tr><td><code>IDLE</code></td><td>Fires rarely when standing still for a long time.</td></tr>
+          <tr><td><code>NIGHT_TIME</code></td><td>Fires occasionally at night.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script>
+    hljs.highlightAll();
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      navigator.clipboard.writeText(pre.innerText).then(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i>', 2000);
+      });
+    }
+  </script>
+</body>
+</html>

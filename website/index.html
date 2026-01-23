@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Omega API & Tools Hub</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6c5ce7;
+      --accent-color: #00cec9;
+      --bg-color: #0a0a0a;
+      --text-color: #ffffff;
+      --card-bg: rgba(0, 0, 0, 0.7);
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 5px; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+      background: var(--bg-color);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .bg-video {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+      background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
+    }
+    .bg-video video {
+      min-width: 100%; min-height: 100%; width: auto; height: auto;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      object-fit: cover; opacity: 0.3;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+    
+    header { text-align: center; padding: 4rem 0; animation: slideDown 1s ease-out; }
+    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .logo { font-size: 3.5rem; font-weight: 700; text-shadow: 0 0 20px rgba(108, 92, 231, 0.6); }
+    .logo span { color: var(--primary-color); }
+    .tagline { color: #aaa; font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+    .section-title { 
+      font-size: 1.8rem; margin: 3rem 0 2rem; 
+      border-left: 5px solid var(--accent-color); 
+      padding-left: 1rem; color: white; 
+    }
+
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem; margin-bottom: 2rem;
+    }
+    .tool-card {
+      background: var(--card-bg); border-radius: 16px; padding: 2rem;
+      border: 1px solid var(--border-color); backdrop-filter: blur(10px);
+      text-decoration: none; color: white; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .tool-card:hover { transform: translateY(-10px); border-color: var(--primary-color); box-shadow: 0 10px 30px rgba(108, 92, 231, 0.2); }
+    .tool-icon { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-color); }
+    .tool-name { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .tool-desc { font-size: 0.9rem; color: #bbb; margin-bottom: 1.5rem; flex-grow: 1; }
+    .tool-link { font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 0.5rem; margin-top: auto;}
+
+    .resource-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    }
+    @media (max-width: 768px) { .resource-grid { grid-template-columns: 1fr; } }
+
+    .resource-card {
+        background: linear-gradient(145deg, rgba(108, 92, 231, 0.1), rgba(0, 0, 0, 0.6));
+        border: 1px solid var(--border-color);
+        border-radius: 16px; padding: 2.5rem;
+        text-decoration: none; color: white;
+        transition: 0.3s ease; display: flex; align-items: center; gap: 2rem;
+    }
+    .resource-card:hover {
+        background: linear-gradient(145deg, rgba(108, 92, 231, 0.2), rgba(0, 0, 0, 0.8));
+        border-color: var(--accent-color);
+    }
+    .resource-icon { font-size: 3rem; color: var(--accent-color); }
+    .resource-content h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .resource-content p { color: #aaa; font-size: 0.95rem; }
+
+    footer { text-align: center; margin-top: 5rem; color: #555; padding-bottom: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="bg-video">
+    <video autoplay muted loop><source src="images/background.mp4" type="video/mp4"></video>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="logo">Slyrien's <span>Omega</span> API</div>
+      <p class="tagline">The central hub for creating Clans, Souls, and extending the Omega Mod.</p>
+    </header>
+
+    <h2 class="section-title">Datapack Generators</h2>
+    <div class="tools-grid">
+      <a href="clans.html" class="tool-card">
+        <i class="fas fa-users tool-icon"></i>
+        <div class="tool-name">Clan Generator</div>
+        <div class="tool-desc">Create custom clans with specific stat modifiers, Jujutsu multipliers, and starting traits.</div>
+        <div class="tool-link">Launch Tool <i class="fas fa-arrow-right"></i></div>
+      </a>
+      <a href="specs.html" class="tool-card">
+        <i class="fas fa-bolt tool-icon" style="color: #ff9f43;"></i>
+        <div class="tool-name">Specializations</div>
+        <div class="tool-desc">Define sub-paths for clans (e.g. Sage, Destroyer) to allow further player progression.</div>
+        <div class="tool-link" style="color: #ff9f43;">Launch Tool <i class="fas fa-arrow-right"></i></div>
+      </a>
+      <a href="souls.html" class="tool-card">
+        <i class="fas fa-ghost tool-icon" style="color: #e056fd;"></i>
+        <div class="tool-name">Soul Generator</div>
+        <div class="tool-desc">Design unique souls with audio cues, custom dialogue triggers, and passive buffs.</div>
+        <div class="tool-link" style="color: #e056fd;">Launch Tool <i class="fas fa-arrow-right"></i></div>
+      </a>
+      <a href="afo.html" class="tool-card">
+        <i class="fas fa-hand-holding-magic tool-icon" style="color: #ff4757;"></i>
+        <div class="tool-name">AFO Mappings</div>
+        <div class="tool-desc">Configure techniques, skills, and mob drops for the All For One ability system.</div>
+        <div class="tool-link" style="color: #ff4757;">Launch Tool <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+    <h2 class="section-title">Documentation & Resources</h2>
+    <div class="resource-grid">
+        <a href="wiki.html" class="resource-card">
+            <i class="fas fa-book resource-icon"></i>
+            <div class="resource-content">
+                <h3>Datapack Wiki</h3>
+                <p>JSON Specifications, file structures, and reference lists for creating custom content without code.</p>
+            </div>
+        </a>
+        <a href="developer.html" class="resource-card">
+            <i class="fas fa-code resource-icon"></i>
+            <div class="resource-content">
+                <h3>Developer API</h3>
+                <p>Java documentation for addon developers. Implement custom interfaces, handle events, and access NBT data.</p>
+            </div>
+        </a>
+    </div>
+
+    <footer>
+      &copy; <span id="year"></span> Slyrien's Omega Utilities. All rights reserved
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

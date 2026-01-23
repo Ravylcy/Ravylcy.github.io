@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clan Specialization Generator</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff9f43; 
+      --secondary-color: #ffffff;
+      --background-color: #0a0a0a;
+      --text-color: #ffffff;
+      --hover-color: #feca57;
+      --card-bg: rgba(0, 0, 0, 0.6);
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --text-light: #dfe6e9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: var(--primary-color) rgba(0,0,0,0.3); }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+    ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 6px; border: 2px solid rgba(0,0,0,0.3); }
+    body { font-family: 'Poppins', sans-serif; color: var(--text-color); background: var(--background-color); overflow-x: hidden; line-height: 1.6; }
+
+    .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s; }
+    .loading-screen.hidden { opacity: 0; visibility: hidden; }
+    .loading-bar-container { width: 300px; height: 4px; background: #333; margin-top: 20px; border-radius: 2px; }
+    .loading-bar { width: 0%; height: 100%; background: var(--primary-color); transition: width 0.5s; }
+
+    .bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; object-fit: cover; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .main-content { background: var(--card-bg); border-radius: 16px; padding: 3rem; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); animation: fadeIn 1s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    h1 { font-size: 2.5rem; text-shadow: 0 2px 10px rgba(255, 159, 67, 0.5); }
+    h2 { font-size: 1.5rem; color: var(--primary-color); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: inline-block; padding-bottom: 5px; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    label { font-size: 0.85rem; color: var(--text-light); }
+    input { background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem; border-radius: 8px; font-family: inherit; width: 100%; }
+    input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 15px rgba(255, 159, 67, 0.2); }
+    .controls { margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn { background: var(--primary-color); color: #000; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 700; cursor: pointer; border: none; transition: 0.3s; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 159, 67, 0.4); }
+    .btn-download { background: #00cec9; color: white; }
+    .item-list { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+    .item-card { background: rgba(255,255,255,0.05); padding: 1rem 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 1rem; }
+    .spec-icon { font-size: 1.5rem; color: var(--primary-color); }
+  </style>
+</head>
+<body>
+
+  <div id="loadingScreen" class="loading-screen">
+    <h1 style="color:white;">Clan Specializations</h1>
+    <div class="loading-bar-container"><div id="loadingBar" class="loading-bar"></div></div>
+  </div>
+
+  <video class="bg-video" autoplay muted loop><source src="images/background.mp4" type="video/mp4"></video>
+
+  <div class="container">
+    <main class="main-content">
+      <h1>Specialization Generator</h1>
+      <p style="color:#aaa; margin-bottom:2rem;">Define specialized paths for your clans (e.g. Sage, Destroyer) with unique stat blocks.</p>
+
+      <form id="specForm">
+        <h2>Identity</h2>
+        <div class="form-grid">
+          <div class="input-group"><label>Spec ID (e.g. zenin_speed)</label><input type="text" id="id" required></div>
+          <div class="input-group"><label>Display Name</label><input type="text" id="display_name" placeholder="Path of Speed"></div>
+        </div>
+
+        <h2>Modifiers (1.0 = Normal)</h2>
+        <div class="form-grid">
+          <div class="input-group"><label>Damage Mult</label><input type="number" id="damage_multiplier" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Tech Cost Mult</label><input type="number" id="technique_cost_mult" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Domain Power</label><input type="number" id="domain_expansion_mult" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>RCT Efficiency</label><input type="number" id="rct_efficiency_mult" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>DA Drain</label><input type="number" id="da_drain_mult" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Guard Duration</label><input type="number" id="guard_duration_mult" value="1.0" step="0.1"></div>
+        </div>
+
+        <h2>Attribute Bonuses</h2>
+        <div class="form-grid">
+          <div class="input-group"><label>Bonus Health</label><input type="number" id="bonus_health" value="0"></div>
+          <div class="input-group"><label>Bonus Armor</label><input type="number" id="bonus_armor" value="0"></div>
+          <div class="input-group"><label>Bonus Attack</label><input type="number" id="bonus_attack_damage" value="0"></div>
+          <div class="input-group"><label>Bonus Speed</label><input type="number" id="bonus_speed" value="0" step="0.01"></div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="btn" onclick="addSpec()">
+            <i class="fas fa-bolt"></i> Add Specialization
+          </button>
+        </div>
+      </form>
+
+      <div id="itemList" class="item-list">
+        <span style="color:rgba(255,255,255,0.3);">No specializations added yet.</span>
+      </div>
+
+      <div class="controls" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
+        <div class="input-group" style="max-width:300px;">
+          <label>Pack Name</label>
+          <input type="text" id="pack_desc" value="Omega Specializations">
+        </div>
+        <button type="button" class="btn btn-download" onclick="downloadPack()">Download Datapack</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let width = 0;
+      const interval = setInterval(() => {
+        width += 20; document.getElementById('loadingBar').style.width = width + '%';
+        if(width >= 100) { clearInterval(interval); setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 500); }
+      }, 150);
+    });
+
+    let specs = [];
+
+    function val(id, type = 'float') {
+      const el = document.getElementById(id);
+      if(type === 'string') return el.value;
+      return parseFloat(el.value) || 0;
+    }
+
+    function addSpec() {
+      const id = val('id', 'string').toLowerCase().replace(/\s/g, '_');
+      if(!id) return alert("ID required");
+
+      const spec = {
+        id: id,
+        display_name: val('display_name', 'string'),
+        damage_multiplier: val('damage_multiplier'),
+        technique_cost_mult: val('technique_cost_mult'),
+        domain_expansion_mult: val('domain_expansion_mult'),
+        rct_efficiency_mult: val('rct_efficiency_mult'),
+        da_drain_mult: val('da_drain_mult'),
+        guard_duration_mult: val('guard_duration_mult'),
+        bonus_health: val('bonus_health'),
+        bonus_armor: val('bonus_armor'),
+        bonus_attack_damage: val('bonus_attack_damage'),
+        bonus_speed: val('bonus_speed'),
+        // Defaults for unused
+        simple_domain_radius_mult: 1.0,
+        simple_domain_level_bonus: 0.0,
+        da_level_bonus: 0.0,
+        rct_fatigue_mult: 1.0,
+        guard_damage_mult: 1.0,
+        weapon_damage_multiplier: val('damage_multiplier'),
+        black_flash_chance_bonus: 0.0,
+        bonus_knockback_resistance: 0.0
+      };
+
+      specs.push(spec);
+      
+      const list = document.getElementById('itemList');
+      if(specs.length === 1) list.innerHTML = '';
+      list.innerHTML += `
+        <div class="item-card">
+          <i class="fas fa-bolt spec-icon"></i>
+          <div><strong>${spec.display_name}</strong><br><span style="font-size:0.8em; opacity:0.7;">${spec.id}</span></div>
+        </div>
+      `;
+      
+      document.getElementById('id').value = "";
+      document.getElementById('display_name').value = "";
+    }
+
+    function downloadPack() {
+      if(specs.length === 0) return alert("Add specs first");
+      const zip = new JSZip();
+      zip.file("pack.mcmeta", JSON.stringify({ pack: { pack_format: 15, description: document.getElementById('pack_desc').value } }, null, 2));
+      const folder = zip.folder("data").folder("omega").folder("omega_clan_specializations");
+      specs.forEach(s => folder.file(`${s.id}.json`, JSON.stringify(s, null, 2)));
+      zip.generateAsync({type:"blob"}).then(c => saveAs(c, "omega_specs_datapack.zip"));
+    }
+  </script>
+</body>
+</html>

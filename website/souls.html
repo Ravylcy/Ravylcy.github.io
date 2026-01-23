@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Omega Soul Generator</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #e056fd;
+      --secondary-color: #ffffff;
+      --background-color: #0a0a0a;
+      --text-color: #ffffff;
+      --hover-color: #be2edd;
+      --card-bg: rgba(0, 0, 0, 0.6);
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --text-light: #dfe6e9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: var(--primary-color) rgba(0,0,0,0.3); }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+    ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 6px; border: 2px solid rgba(0,0,0,0.3); }
+    body { font-family: 'Poppins', sans-serif; color: var(--text-color); background: var(--background-color); overflow-x: hidden; line-height: 1.6; }
+
+    .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s; }
+    .loading-screen.hidden { opacity: 0; visibility: hidden; }
+    .loading-bar-container { width: 300px; height: 4px; background: #333; margin-top: 20px; border-radius: 2px; }
+    .loading-bar { width: 0%; height: 100%; background: var(--primary-color); transition: width 0.5s; }
+
+    .bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; object-fit: cover; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .main-content { background: var(--card-bg); border-radius: 16px; padding: 3rem; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); animation: fadeIn 1s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    h1 { font-size: 2.5rem; text-shadow: 0 2px 10px rgba(224, 86, 253, 0.5); }
+    h2 { font-size: 1.5rem; color: var(--primary-color); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: inline-block; padding-bottom: 5px; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    label { font-size: 0.85rem; color: var(--text-light); }
+    input, select, textarea { background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem; border-radius: 8px; font-family: inherit; width: 100%; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 15px rgba(224, 86, 253, 0.2); }
+    
+    .dialogue-box { background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); margin-top: 1rem; }
+    .tag { background: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; color: black; font-weight: bold; }
+
+    .controls { margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn { background: var(--primary-color); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(224, 86, 253, 0.4); }
+    .btn-download { background: #00cec9; }
+
+    .item-list { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+    .item-card { background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 1rem; }
+    .item-color { width: 15px; height: 15px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
+  </style>
+</head>
+<body>
+
+  <div id="loadingScreen" class="loading-screen">
+    <h1 style="color:white;">Omega Souls</h1>
+    <div class="loading-bar-container"><div id="loadingBar" class="loading-bar"></div></div>
+  </div>
+
+  <video class="bg-video" autoplay muted loop><source src="images/background.mp4" type="video/mp4"></video>
+
+  <div class="container">
+    <main class="main-content">
+      <h1>Soul Shard Generator</h1>
+      <p style="color:#aaa; margin-bottom:2rem;">Create custom souls with unique stats, audio cues, and dialogue interactions.</p>
+
+      <form id="soulForm">
+        <h2>Identity</h2>
+        <div class="form-grid">
+          <div class="input-group"><label>Soul ID</label><input type="text" id="id" placeholder="e.g. sukuna_finger" required></div>
+          <div class="input-group"><label>Display Name</label><input type="text" id="name" placeholder="e.g. King of Curses"></div>
+          <div class="input-group"><label>Soul Color</label><input type="color" id="color" value="#e056fd" style="height:45px; padding:0 5px;"></div>
+          <div class="input-group"><label>Has God Ki?</label>
+            <select id="has_god_ki"><option value="false">No</option><option value="true">Yes</option></select>
+          </div>
+        </div>
+
+        <h2>Audio FX</h2>
+        <div class="form-grid">
+          <div class="input-group"><label>Primary Sound</label><input type="text" id="blip_sound" value="omega:maleblip"></div>
+          <div class="input-group"><label>Pitch</label><input type="number" id="blip_pitch" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Volume</label><input type="number" id="blip_volume" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Secondary Sound (Optional)</label><input type="text" id="sec_sound" placeholder="omega:femaleblip"></div>
+        </div>
+
+        <h2>Multipliers (1.0 = Normal)</h2>
+        <div class="form-grid">
+          <div class="input-group"><label>Dmg Mult</label><input type="number" id="damage_multiplier" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Weapon Dmg Mult</label><input type="number" id="weapon_damage_multiplier" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Simple Domain Radius</label><input type="number" id="simple_domain_radius_mult" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>Domain Expansion</label><input type="number" id="domain_expansion_mult" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>RCT Efficiency</label><input type="number" id="rct_efficiency_mult" value="1.0" step="0.1"></div>
+          <div class="input-group"><label>DA Drain</label><input type="number" id="da_drain_mult" value="1.0" step="0.1"></div>
+        </div>
+
+        <h2>Passive Bonuses</h2>
+        <div class="form-grid">
+          <div class="input-group"><label>Bonus Health</label><input type="number" id="health_bonus" value="0"></div>
+          <div class="input-group"><label>Bonus Armor</label><input type="number" id="armor_bonus" value="0"></div>
+          <div class="input-group"><label>Bonus Attack</label><input type="number" id="attack_bonus" value="0"></div>
+          <div class="input-group"><label>Bonus Speed</label><input type="number" id="speed_bonus" value="0" step="0.01"></div>
+        </div>
+
+        <h2>Soul Dialogue</h2>
+        <div class="dialogue-box">
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Trigger Event</label>
+              <select id="dialogue_trigger">
+                <option value="COMBAT_START">Combat Start</option>
+                <option value="PLAYER_LOW_HEALTH">Player Low HP</option>
+                <option value="TARGET_LOW_HEALTH">Enemy Low HP</option>
+                <option value="PLAYER_KILL_MOB">Kill Mob</option>
+                <option value="PLAYER_KILL_BOSS">Kill Boss</option>
+                <option value="PLAYER_DEATH">Player Death</option>
+                <option value="IDLE">Idle (Rare)</option>
+                <option value="NIGHT_TIME">Night Time</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Lines (One per line)</label>
+              <textarea id="dialogue_lines" rows="3" placeholder="I am the strongest...&#10;Pathetic creature."></textarea>
+            </div>
+          </div>
+          <div style="margin-top:10px; text-align:right;">
+            <button type="button" class="btn" style="padding:0.5rem 1rem; font-size:0.8rem;" onclick="saveDialogue()">Save Trigger</button>
+          </div>
+          <div id="savedDialogues" style="margin-top:10px; font-size:0.9rem; color:#aaa;"></div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="btn" onclick="addSoul()">
+            <i class="fas fa-ghost"></i> Add Soul
+          </button>
+        </div>
+      </form>
+
+      <div id="itemList" class="item-list">
+        <span style="color:rgba(255,255,255,0.3);">No souls added yet.</span>
+      </div>
+
+      <div class="controls" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
+        <div class="input-group" style="max-width:300px;">
+          <label>Pack Name</label>
+          <input type="text" id="pack_desc" value="Omega Souls">
+        </div>
+        <button type="button" class="btn btn-download" onclick="downloadPack()">Download Datapack</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let width = 0;
+      const interval = setInterval(() => {
+        width += 20; document.getElementById('loadingBar').style.width = width + '%';
+        if(width >= 100) { clearInterval(interval); setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 500); }
+      }, 150);
+    });
+
+    let souls = [];
+    let currentDialogues = {};
+
+    function val(id, type = 'float') {
+      const el = document.getElementById(id);
+      if(type === 'string') return el.value;
+      if(type === 'bool') return el.value === 'true';
+      return parseFloat(el.value) || 0;
+    }
+
+    function saveDialogue() {
+      const trigger = document.getElementById('dialogue_trigger').value;
+      const lines = document.getElementById('dialogue_lines').value.split('\n').filter(l => l.trim());
+      if(lines.length > 0) {
+        currentDialogues[trigger] = lines;
+        const div = document.getElementById('savedDialogues');
+        div.innerHTML += `<span class="tag">${trigger}</span> `;
+        document.getElementById('dialogue_lines').value = "";
+      }
+    }
+
+    function addSoul() {
+      const id = val('id', 'string').toLowerCase().replace(/\s/g, '_');
+      if(!id) return alert("ID required");
+
+      const soul = {
+        id: id,
+        name: val('name', 'string'),
+        color: val('color', 'string'),
+        has_god_ki: val('has_god_ki', 'bool'),
+        blip_sound: val('blip_sound', 'string'),
+        blip_pitch: val('blip_pitch'),
+        blip_volume: val('blip_volume'),
+        secondary_blip_sound: val('sec_sound', 'string') || null,
+        
+        damage_multiplier: val('damage_multiplier'),
+        weapon_damage_multiplier: val('weapon_damage_multiplier'),
+        simple_domain_radius_mult: val('simple_domain_radius_mult'),
+        domain_expansion_mult: val('domain_expansion_mult'),
+        rct_efficiency_mult: val('rct_efficiency_mult'),
+        da_drain_mult: val('da_drain_mult'),
+        
+        health_bonus: val('health_bonus'),
+        armor_bonus: val('armor_bonus'),
+        attack_bonus: val('attack_bonus'),
+        speed_bonus: val('speed_bonus'),
+        
+        dialogue: Object.keys(currentDialogues).length > 0 ? {...currentDialogues} : null
+      };
+
+      souls.push(soul);
+      
+      const list = document.getElementById('itemList');
+      if(souls.length === 1) list.innerHTML = '';
+      list.innerHTML += `
+        <div class="item-card">
+          <div class="item-color" style="background-color:${soul.color}; color:${soul.color}"></div>
+          <div><strong>${soul.name}</strong><br><span style="font-size:0.8em; opacity:0.7;">${soul.id}</span></div>
+        </div>
+      `;
+
+      document.getElementById('id').value = "";
+      document.getElementById('name').value = "";
+      currentDialogues = {};
+      document.getElementById('savedDialogues').innerHTML = "";
+    }
+
+    function downloadPack() {
+      if(souls.length === 0) return alert("Add souls first");
+      const zip = new JSZip();
+      zip.file("pack.mcmeta", JSON.stringify({ pack: { pack_format: 15, description: document.getElementById('pack_desc').value } }, null, 2));
+      const folder = zip.folder("data").folder("omega").folder("omega_souls");
+      souls.forEach(s => folder.file(`${s.id}.json`, JSON.stringify(s, null, 2)));
+      zip.generateAsync({type:"blob"}).then(c => saveAs(c, "omega_souls_datapack.zip"));
+    }
+  </script>
+</body>
+</html>

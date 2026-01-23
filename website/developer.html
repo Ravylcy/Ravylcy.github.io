@@ -1,0 +1,321 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Omega Developer API</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+  <style>
+    :root {
+      --primary-color: #a29bfe;
+      --bg-color: #0a0a0a;
+      --text-color: #ffffff;
+      --card-bg: rgba(0, 0, 0, 0.7);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --code-bg: #1e1e1e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; color: var(--text-color); background: var(--bg-color); line-height: 1.6; }
+
+    .bg-video {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+      background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
+    }
+    .bg-video video {
+      min-width: 100%; min-height: 100%; width: auto; height: auto;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      object-fit: cover; opacity: 0.3;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+    .dev-header { margin-bottom: 3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
+    .breadcrumb { color: #aaa; margin-bottom: 0.5rem; }
+    .breadcrumb a { color: var(--primary-color); text-decoration: none; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+    .section { margin-bottom: 4rem; background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); }
+    h2 { color: var(--primary-color); margin-bottom: 1.5rem; font-size: 1.8rem; }
+    h3 { color: #dfe6e9; margin: 1.5rem 0 1rem; border-left: 3px solid var(--primary-color); padding-left: 10px; }
+
+    .code-block { background: var(--code-bg); border-radius: 8px; border: 1px solid #333; margin: 1rem 0; overflow: hidden; }
+    .code-header { background: #252526; padding: 0.5rem 1rem; font-size: 0.8rem; color: #888; display: flex; justify-content: space-between; align-items: center; }
+    .copy-btn { background: none; border: none; color: #aaa; cursor: pointer; }
+    .copy-btn:hover { color: white; }
+    pre { margin: 0; padding: 1rem; overflow-x: auto; }
+
+    .api-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .api-table th, .api-table td { text-align: left; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .api-table th { color: var(--primary-color); background: rgba(0,0,0,0.3); }
+    .api-table code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; color: #fab1a0; font-family: 'Consolas', monospace; }
+  </style>
+</head>
+<body>
+  <div class="bg-video">
+    <video autoplay muted loop><source src="images/background.mp4" type="video/mp4"></video>
+  </div>
+  <div class="container">
+    <div class="dev-header">
+      <div class="breadcrumb"><a href="index.html"><i class="fas fa-arrow-left"></i> Back to Hub</a> / Developer API</div>
+      <h1>Java API Integration</h1>
+      <p>Guide for mod developers to integrate with Slyrien's Omega via the Forge API.</p>
+    </div>
+    <div class="section">
+      <h2>Getting Started</h2>
+      <p>To create complex logic that cannot be achieved via JSON (e.g., custom on-hit effects, render logic), you must implement the provided Java interfaces and register them in your mod's main class.</p>
+    </div>
+    <div class="section">
+      <h2>1. Creating a Custom Clan</h2>
+      <p>Implement the <code>IClan</code> interface. The example below demonstrates every available multiplier method you can override to control Jujutsu mechanics.</p>
+      <div class="code-block">
+        <div class="code-header">MyCustomClan.java <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-java">package com.example.addon.clans;
+import net.slyrien.api.IClan;
+import net.slyrien.capability.IOmegaPlayerData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.network.chat.Component;
+public class MyCustomClan implements IClan {
+    @Override
+    public String getClanId() {
+        return "my_custom_clan";
+    }
+    @Override
+    public Component getDisplayName() {
+        return Component.literal("My Custom Clan");
+    }
+    // --- DAMAGE & COMBAT ---
+    @Override // 1.0 = 100% (Normal). 1.5 = 150% Damage
+    public float getDamageMultiplier(LivingEntity entity, IOmegaPlayerData cap, boolean isWeapon) {
+        return isWeapon ? 1.0f : 1.2f; // 20% bonus to unarmed/technique damage only
+    }
+    @Override // Additive bonus (0.05 = +5% chance)
+    public double getBlackFlashChanceBonus(LivingEntity entity, IOmegaPlayerData cap) {
+        return 0.1; 
+    }
+    // --- DOMAIN EXPANSION & SIMPLE DOMAIN ---
+    @Override // Multiplies the power/refinement of Domain Expansions
+    public float getDomainExpansionMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 1.1f;
+    }
+    @Override // Radius multiplier for Simple Domain
+    public float getSimpleDomainRadiusMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 1.5f;
+    }
+    @Override // Flat addition to Simple Domain output level
+    public float getSimpleDomainLevelBonus(LivingEntity entity, IOmegaPlayerData cap) {
+        return 1.0f;
+    }
+    // --- DOMAIN AMPLIFICATION ---
+    @Override // Multiplier for CE drain rate (0.8 = 20% less drain)
+    public float getDaDrainMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 0.8f;
+    }
+    @Override // Flat addition to Domain Amplification output
+    public float getDaLevelBonus(LivingEntity entity, IOmegaPlayerData cap) {
+        return 0.0f;
+    }
+    // --- REVERSE CURSED TECHNIQUE (RCT) ---
+    @Override // Multiplier for healing amount per tick
+    public float getRctEfficiencyMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 1.0f;
+    }
+    @Override // Multiplier for fatigue accumulation (lower is better)
+    public float getRctFatigueMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 0.9f; 
+    }
+    // --- DEFENSE & UTILITY ---
+    @Override // Damage taken multiplier while guarding (0.5 = 50% damage reduction)
+    public float getGuardDamageMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 0.8f;
+    }
+    @Override // How long a guard lasts before breaking
+    public float getGuardDurationMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 1.2f;
+    }
+    @Override // Multiplier for Cursed Technique CE costs (0.5 = half cost)
+    public float getTechniqueCostMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 0.9f;
+    }
+    // --- EVENT HOOKS ---
+    @Override
+    public void onEntityAttack(LivingHurtEvent event, LivingEntity attacker, IOmegaPlayerData cap) {
+        // Logic executed when clan member hits something
+    }
+}</code></pre>
+      </div>
+    </div>
+    <div class="section">
+      <h2>2. Custom Traits & Physical Traits</h2>
+      <p>Traits function similarly to Clans but can be stacked on top of them. Use <code>ITrait</code> for spiritual abilities (e.g., "Angel") and <code>IPhysicalTrait</code> for bodily mutations (e.g., "Vessel"). They support all the multipliers listed in the Clan section.</p>
+      <h3>Implementing a Trait</h3>
+      <div class="code-block">
+        <div class="code-header">MyCustomTrait.java <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-java">import net.slyrien.api.ITrait;
+public class MyCustomTrait implements ITrait {
+    @Override
+    public String getTraitId() {
+        return "divine_protection";
+    }
+    @Override
+    public float getGuardDamageMult(LivingEntity entity, IOmegaPlayerData cap) {
+        // Traits stack multiplicatively
+        return 0.5f; // Takes 50% damage while guarding
+    }
+    @Override
+    public void onAdd(LivingEntity entity, IOmegaPlayerData capability) {
+        // Give permanent potion effects or attributes here
+    }
+}</code></pre>
+      </div>
+      <h3>Implementing a Physical Trait</h3>
+      <div class="code-block">
+        <div class="code-header">MyPhysicalTrait.java <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-java">import net.slyrien.api.IPhysicalTrait;
+public class MyPhysicalTrait implements IPhysicalTrait {
+    @Override
+    public String getPhysicalTraitId() {
+        return "steel_skin";
+    }
+    @Override
+    public float getDamageMultiplier(LivingEntity entity, IOmegaPlayerData cap, boolean isWeapon) {
+        return isWeapon ? 1.0f : 1.5f; // 50% bonus to unarmed damage
+    }
+    @Override
+    public void onEntityTick(LivingEntity entity, IOmegaPlayerData capability) {
+        if(entity.tickCount % 20 == 0) {
+            // Regeneration logic
+        }
+    }
+}</code></pre>
+      </div>
+    </div>
+    <div class="section">
+      <h2>3. Creating Custom Souls</h2>
+      <p>Souls (<code>ISoul</code>) represent absorbed entities like Sukuna fingers. They have unique methods for audio and dialogue triggers in addition to the standard stat multipliers.</p>
+      <div class="code-block">
+        <div class="code-header">AncientSorcererSoul.java <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-java">import net.slyrien.api.ISoul;
+import net.slyrien.util.souls.DialogueTrigger;
+public class AncientSorcererSoul implements ISoul {
+    @Override
+    public String getSoulId() { return "ancient_sorcerer"; }
+    @Override
+    public Component getDisplayName() { return Component.literal("The Ancient One"); }
+    @Override
+    public int getColor() { return 0xFF0000; } // Chat color for dialogue
+    @Override
+    public SoundEvent getBlipSound() {
+        return SoundEvents.EXPERIENCE_ORB_PICKUP; // Sound played when dialogue types out
+    }
+    // --- Dialogue Logic ---
+    @Override
+    public List<String> getDialogue(DialogueTrigger trigger) {
+        switch (trigger) {
+            case COMBAT_START:
+                return List.of("Show me your strength", "Do not disappoint me.");
+            case PLAYER_LOW_HEALTH:
+                return List.of("Stand up. We are not finished.");
+            case TARGET_LOW_HEALTH:
+                return List.of("Finish them.");
+            case PLAYER_KILL_BOSS:
+                return List.of("A worthy sacrifice.");
+            default:
+                return Collections.emptyList();
+        }
+    }
+    // --- Stats ---
+    @Override
+    public float getHealthBonus() { return 20.0f; } // +10 Hearts
+    @Override
+    public float getDomainExpansionMult(LivingEntity entity, IOmegaPlayerData cap) {
+        return 1.2f; // 20% stronger domains
+    }
+}</code></pre>
+      </div>
+    </div>
+    <div class="section">
+      <h2>4. Global Modifiers (Advanced & Unorthodox)</h2>
+      <p><code>IOmegaGlobalModifier</code> applies rules to <strong>every</strong> entity in the game. While simple uses include global nerfs, this interface allows you to implement complex logic based on NBT data, dimensions, or specific technique interactions, effectively letting you create custom game modes or overhaul existing mechanics.</p>
+      <div class="code-block">
+        <div class="code-header">UnorthodoxGlobalLogic.java <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-java">import net.slyrien.api.IOmegaGlobalModifier;
+import net.minecraft.world.entity.LivingEntity;
+public class UnorthodoxGlobalLogic implements IOmegaGlobalModifier {
+    @Override
+    public float getDamageMultiplier(LivingEntity entity, IOmegaPlayerData cap, boolean isWeapon) {
+        // Feature: "Culling Game" Event Logic
+        // Checks a global GameRule or a tag on the player indicating they are a participant
+        if (entity.getPersistentData().getBoolean("InCullingGame")) {
+            // Unorthodox: Damage increases as health gets lower (Berserker Mechanic)
+            float missingHp = (entity.getMaxHealth() - entity.getHealth()) / entity.getMaxHealth();
+            return 1.0f + missingHp; // Up to 2x damage at 0 HP
+        }
+        return 1.0f;
+    }
+    @Override
+    public float getTechniqueCostMult(LivingEntity entity, IOmegaPlayerData cap) {
+        // Technique Interaction: "Binding Vow"
+        // If the player has a specific custom NBT tag (set by a command or item)
+        if (entity.getPersistentData().getBoolean("BindingVow_Overclock")) {
+            return 2.0f; // Double CE Cost
+        }
+        // Environment Interaction: Nether buffs Fire techniques (Jogo / Disaster Flames)
+        double techniqueId = entity.getPersistentData().getDouble("PlayerCurseTechnique");
+        if (techniqueId == 4.0 && entity.level().dimension() == Level.NETHER) { // ID 4 = Disaster Flames
+            return 0.5f; // Half cost for Jogo in the Nether
+        }
+        return 1.0f;
+    }
+    @Override
+    public float getRctEfficiencyMult(LivingEntity entity, IOmegaPlayerData cap) {
+        // Feature: "Cursed Realm" Dimension
+        // Disable RCT entirely in a specific dimension
+        if (entity.level().dimension().location().toString().equals("my_mod:cursed_realm")) {
+            return 0.0f; 
+        }
+        // Unorthodox: Binding Vow Reward (from above)
+        if (entity.getPersistentData().getBoolean("BindingVow_Overclock")) {
+            return 1.5f; // 50% better healing in exchange for double cost
+        }
+        return 1.0f;
+    }
+}</code></pre>
+      </div>
+    </div>
+    <div class="section">
+      <h2>5. Registering Content</h2>
+      <p>Finally, register all your custom implementations in your mod's constructor to load them into Omega.</p>
+      <div class="code-block">
+        <div class="code-header">ExampleMod.java <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button></div>
+        <pre><code class="language-java">@Mod("examplemod")
+public class ExampleMod {
+    public ExampleMod() {
+        // Register Clans
+        SlyrienOmegaAPI.registerClan(new MyCustomClan());
+        // Register Traits
+        SlyrienOmegaAPI.registerTrait(new MyCustomTrait());
+        SlyrienOmegaAPI.registerPhysicalTrait(new MyPhysicalTrait());
+        // Register Souls
+        SlyrienOmegaAPI.registerSoul(new AncientSorcererSoul());
+        // Register Global Logic
+        SlyrienOmegaAPI.registerGlobalModifier(new UnorthodoxGlobalLogic());
+    }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script>
+    hljs.highlightAll();
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      navigator.clipboard.writeText(pre.innerText).then(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i>', 2000);
+      });
+    }
+  </script>
+</body>
+</html>
